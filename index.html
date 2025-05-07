@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeBot - Kugelroboter gegen Belästigung</title>
+    <style>
+        
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Typography */
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #393939, #272727);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        /* Section Styles */
+        .robot-showcase {
+            padding: 3rem 0 0.5rem 0; 
+            background-color: white;
+            text-align: center;
+        }
+
+
+        /*Funktionen */
+        .features {
+    padding: 3rem 0;
+    background: linear-gradient(135deg, #393939, #272727);
+    color: black; /* Standardfarbe für alles */
+}
+
+/* Nur Überschrift und Einleitungstext weiß machen */
+.features .container > h2,
+.features .container > p {
+    color: white;
+}
+
+
+        
+        .mission {
+            background-color: #f0f4ff;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, #a777e3, #6e8efb);
+            padding: 3rem 0;
+            text-align: center;
+            color: white;
+        }
+        
+        /* Robot Display Area */
+        .robots-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin: 30px 0;
+        }
+        
+
+        .robot-wrapper {
+            position: relative;
+            width: 200px;
+            height: 300px;
+            margin: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .robot-wrapper:hover {
+            transform: translateY(-10px);
+        }
+        
+        .robot-name {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .robot-description {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .robot-display {
+            position: absolute;
+            top: 85px;
+            left: 60px;
+            width: 80px;
+            height: 30px;
+            background-color: #333;
+            color: #4a86e8;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 30px;
+            font-family: monospace;
+            font-size: 0.8em;
+            z-index: 10;
+        }
+        
+        .robot-animation-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            flex-shrink: 0; /* Prevents robot from shrinking in flex layouts */
+        }
+        
+        /* Speech Bubbles */
+        .speech-bubble {
+            background-color: rgb(237, 237, 237);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 10;
+            
+
+        
+        }
+        
+        /* Default speech bubble (in main robot display) */
+        .robot-wrapper .speech-bubble {
+            position: absolute;
+            top: -60px;
+            left: 60px;
+            max-width: 300px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            display: none;
+            pointer-events: none;
+        }
+        
+        .robot-wrapper .speech-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: 15px;
+            left: -10px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 10px 15px 10px 0;
+            border-color: transparent white transparent transparent;
+        }
+        
+        .speech-bubble.active {
+            opacity: 1;
+            transform: scale(1);
+            display: block;
+        }
+        
+        /* Features Section */
+        .features-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            width: 250px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            
+            
+            
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #6e8efb;
+        }
+        
+        /* Modal Styles */
+        .scenario-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+       /* Ansicht Situation */
+            .modal-content {
+            background: linear-gradient(135deg, #393939, #272727);
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            color: black; /* Standardfarbe für gesamten Text */
+        }
+
+            /* Nur das erste h2 in der modal-header soll weiß sein */
+            .modal-content .modal-header h2 {
+            color: white;
+        }
+
+
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Robot Spotlight in Modal */
+        .robot-spotlight {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-top: 20px;
+            position: relative;
+            gap: 20px;
+        }
+        
+        .robot-spotlight .speech-bubble {
+            position: relative;
+            top: 0;
+            left: 0;
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+            flex: 1;
+        }
+        
+        .robot-spotlight .speech-bubble:after {
+            display: none;
+        }
+        
+        /* Scenario Cards */
+        .scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .scenario-card {
+            background-color: #f7f7f7;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .scenario-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            border-color: #6e8efb;
+        }
+        
+        .audio-controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        /* Buttons & CTAs */
+        .btn {
+            display: inline-block;
+            background-color: white;
+            color: #6e8efb;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            
+            
+           
+        }
+        
+        button {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            
+        }
+        
+        button:disabled {
+            background: linear-gradient(135deg, #b4b4b4, #8a8a8a);
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .robots-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .robot-wrapper {
+                margin: 10px auto;
+            }
+            
+            .robot-wrapper .speech-bubble {
+                right: -50px;
+                max-width: 200px;
+            }
+            
+            .scenarios {
+                grid-template-columns: 1fr;
+            }
+            
+            .robot-spotlight {
+                flex-direction: column;
+            }
+            
+            .robot-spotlight .speech-bubble {
+                width: 100%;
+                margin-top: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .robot-wrapper .speech-bubble {
+                position: static;
+                margin-top: 20px;
+                max-width: 100%;
+            }
+            
+            .robot-wrapper .speech-bubble:after {
+                display: none;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    
+    <header>
+        <div class="container">
+            <h1> S A F E B O T</h1>
+            <p class="tagline">  Respekt. Sicherheit. Gleichstellung. Robotik macht's möglich.</p>
+
+        </div>
+    </header>
+    
+    <section class="robot-showcase">
+        <div class="container">
+            <h2>Unsere SafeBot Prototypen</h2>
+            <p>Klicken Sie auf einen SafeBot, um zu sehen, wie er in verschiedenen Situationen reagiert.</p>
+            
+            <div class="robots-container">
+                <!-- Älterer Roboter (60+) -->
+                <div class="robot-wrapper" id="seniorRobot" onclick="openScenarioModal('senior')">
+                    <div class="robot-name">SeniorSphere</div>
+                    <div class="robot-description">Schutzbegleiter für ältere Menschen</div>
+                    <svg class="robot" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Hauptkugel -->
+                        <circle cx="100" cy="100" r="80" fill="#C0C0C0" stroke="#A9A9A9" stroke-width="2" />
+                        
+                        <!-- Sensorlinien -->
+                        <path d="M 50 70 Q 100 20, 150 70" fill="none" stroke="#A9A9A9" stroke-width="2" />
+                        <path d="M 50 130 Q 100 180, 150 130" fill="none" stroke="#A9A9A9" stroke-width="2" />
+                        <path d="M 70 50 Q 20 100, 70 150" fill="none" stroke="#A9A9A9" stroke-width="2" />
+                        <path d="M 130 50 Q 180 100, 130 150" fill="none" stroke="#A9A9A9" stroke-width="2" />
+                        
+                        <!-- Hauptauge/Sensor -->
+                        <circle cx="100" cy="80" r="20" fill="#333" />
+                        <circle cx="100" cy="80" r="15" fill="#6e8efb" />
+                        <circle cx="100" cy="80" r="5" fill="white" />
+                        
+                        <!--kleine Brille -->
+                        <path d="M 80 75 Q 100 70, 120 75" fill="none" stroke="#333" stroke-width="3" />
+                        
+                        <!-- Sekundäre Sensoren -->
+                        <circle cx="70" cy="110" r="10" fill="#333" />
+                        <circle cx="70" cy="110" r="5" fill="#6e8efb" />
+                        
+                        <circle cx="130" cy="110" r="10" fill="#333" />
+                        <circle cx="130" cy="110" r="5" fill="#6e8efb" />
+                        
+                        <!-- Antenne (für Silbergrau) -->
+                        <line x1="100" y1="20" x2="100" y2="5" stroke="#333" stroke-width="3" />
+                        <circle cx="100" cy="5" r="3" fill="#6e8efb" />
+                    </svg>
+                    <div class="robot-display" style="color: #6e8efb;">SENIOR</div>
+                </div>
+                
+<!-- Junges Mädchen Roboter -->
+<div class="robot-wrapper" id="girlRobot" onclick="openScenarioModal('girl')">
+    <div class="robot-name">FemmeSphere</div>
+    <div class="robot-description">Begleiter für junge <br>Frauen</div>
+    <svg class="robot" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Hauptkugel -->
+        <circle cx="100" cy="100" r="80" fill="#FFD6E7" stroke="#FF69B4" stroke-width="2" />
+    
+        <!-- Sensorlinien -->
+        <path d="M 50 70 Q 100 20, 150 70" fill="none" stroke="#FF69B4" stroke-width="2" />
+        <path d="M 50 130 Q 100 180, 150 130" fill="none" stroke="#FF69B4" stroke-width="2" />
+        <path d="M 70 50 Q 20 100, 70 150" fill="none" stroke="#FF69B4" stroke-width="2" />
+        <path d="M 130 50 Q 180 100, 130 150" fill="none" stroke="#FF69B4" stroke-width="2" />
+        
+        <!-- Hauptauge/Sensor -->
+        <circle cx="100" cy="75" r="20" fill="#333" />
+        <circle cx="100" cy="75" r="15" fill="#FF69B4" />
+        <circle cx="100" cy="75" r="5" fill="white" />
+        
+        <!-- Sekundäre Sensoren -->
+        <circle cx="70" cy="120" r="10" fill="#333" />
+        <circle cx="70" cy="120" r="5" fill="#FF69B4" />
+        
+        <circle cx="130" cy="120" r="10" fill="#333" />
+        <circle cx="130" cy="120" r="5" fill="#FF69B4" />
+    </svg>
+    <div class="robot-display" style="color: #FF69B4;">FEMME</div>
+</div>
+
+
+<!-- LGBTQ+ Roboter -->
+<div class="robot-wrapper" id="prideRobot" onclick="openScenarioModal('pride')">
+    <div class="robot-name">PrideSphere</div>
+    <div class="robot-description">Unterstützung für die LGBTQ+ Community</div>
+    <svg class="robot" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Regenbogen-Hauptkugel mit Farbverlauf -->
+        <defs>
+            <linearGradient id="rainbowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF0018" />
+                <stop offset="16.6%" stop-color="#FFA52C" />
+                <stop offset="33.3%" stop-color="#FFFF41" />
+                <stop offset="50%" stop-color="#008018" />
+                <stop offset="66.6%" stop-color="#0000F9" />
+                <stop offset="83.3%" stop-color="#86007D" /> 
+                <stop offset="100%" stop-color="#FF0018" />
+            </linearGradient>
+        </defs>
+        
+        <!-- Hauptkugel -->
+        <circle cx="100" cy="100" r="80" fill="url(#rainbowGradient)" stroke="#333" stroke-width="2" />
+        
+        <!-- Sensorlinien -->
+        <path d="M 50 70 Q 100 20, 150 70" fill="none" stroke="#333" stroke-width="1.5" stroke-opacity="0.5" />
+        <path d="M 50 130 Q 100 180, 150 130" fill="none" stroke="#333" stroke-width="1.5" stroke-opacity="0.5" />
+        <path d="M 70 50 Q 20 100, 70 150" fill="none" stroke="#333" stroke-width="1.5" stroke-opacity="0.5" />
+        <path d="M 130 50 Q 180 100, 130 150" fill="none" stroke="#333" stroke-width="1.5" stroke-opacity="0.5" />
+        
+        <!-- Hauptauge/Sensor -->
+        <circle cx="100" cy="75" r="20" fill="#333" />
+        <circle cx="100" cy="75" r="15" fill="white" />
+        <circle cx="100" cy="75" r="10" fill="#333" />
+        <circle cx="100" cy="75" r="5" fill="white" />
+        
+        <!-- Sekundäre Sensoren -->
+        <circle cx="70" cy="110" r="10" fill="#333" />
+        <circle cx="70" cy="110" r="5" fill="white" />
+        
+        <circle cx="130" cy="110" r="10" fill="#333" />
+        <circle cx="130" cy="110" r="5" fill="white" />
+        
+        <!-- Pride-Flagge als Anzeige -->
+        <rect x="85" y="125" width="30" height="15" rx="5" fill="white" />
+        <rect x="87" y="127" width="26" height="2" fill="#FF0018" />
+        <rect x="87" y="129" width="26" height="2" fill="#FFA52C" />
+        <rect x="87" y="131" width="26" height="2" fill="#FFFF41" />
+        <rect x="87" y="133" width="26" height="2" fill="#008018" />
+        <rect x="87" y="135" width="26" height="2" fill="#0000F9" />
+        <rect x="87" y="137" width="26" height="2" fill="#86007D" />
+    </svg>
+    <div class="robot-display" style="color: #FF0018;">PRIDE</div>
+</div>
+
+
+            
+<p style="margin-top: -50px;">Innovative Kugelroboter zum Schutz vor Belästigung im öffentlichen Raum.</p>
+        </div>
+    </section>
+    
+    <!-- Senior Roboter Szenario-Modal -->
+    <div id="seniorModal" class="scenario-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>SeniorSphere - Szenarien</h2>
+                <button class="close-button" onclick="closeModal('seniorModal')">&times;</button>
+            </div>
+            
+            <div class="robot-spotlight">
+                <div class="robot-animation-container">
+                    <svg class="robot" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Hauptkugel -->
+                        <circle cx="100" cy="100" r="80" fill="#C0C0C0" stroke="#A9A9A9" stroke-width="2">
+                            <animate attributeName="fill" values="#C0C0C0;#ff4d4d;#C0C0C0" dur="0.5s" begin="indefinite" repeatCount="1" id="seniorAlarmAnimation" />
+                        </circle>
+                        
+                        <!-- Sensorlinien -->
+                        <path d="M 50 70 Q 100 20, 150 70" fill="none" stroke="#A9A9A9" stroke-width="2" />
+                        <path d="M 50 130 Q 100 180, 150 130" fill="none" stroke="#A9A9A9" stroke-width="2" />
+                        <path d="M 70 50 Q 20 100, 70 150" fill="none" stroke="#A9A9A9" stroke-width="2" />
+                        <path d="M 130 50 Q 180 100, 130 150" fill="none" stroke="#A9A9A9" stroke-width="2" />
+                        
+                        <!-- Hauptauge/Sensor -->
+                        <circle cx="100" cy="80" r="20" fill="#333" />
+                        <circle cx="100" cy="80" r="15" fill="#6e8efb">
+                            <animate attributeName="fill" values="#6e8efb;#ff4d4d;#6e8efb" dur="1s" begin="indefinite" repeatCount="1" id="seniorEyeAnimation" />
+                        </circle>
+                        <circle cx="100" cy="80" r="5" fill="white" />
+                        
+                        <!-- Alterskennzeichen - kleine "Brille" -->
+                        <path d="M 80 75 Q 100 70, 120 75" fill="none" stroke="#333" stroke-width="3" />
+                        
+                        <!-- Sekundäre Sensoren -->
+                        <circle cx="70" cy="110" r="10" fill="#333" />
+                        <circle cx="70" cy="110" r="5" fill="#6e8efb">
+                            <animate attributeName="r" values="5;7;5" dur="0.5s" begin="indefinite" repeatCount="6" id="seniorLeftSensorAnimation" />
+                        </circle>
+                        
+                        <circle cx="130" cy="110" r="10" fill="#333" />
+                        <circle cx="130" cy="110" r="5" fill="#6e8efb">
+                            <animate attributeName="r" values="5;7;5" dur="0.5s" begin="indefinite" repeatCount="6" id="seniorRightSensorAnimation" />
+                        </circle>
+                        
+                        <!-- Antenne (für Silbergrau) -->
+                        <line x1="100" y1="20" x2="100" y2="5" stroke="#333" stroke-width="3" />
+                        <circle cx="100" cy="5" r="3" fill="#6e8efb">
+                            <animate attributeName="r" values="3;5;3" dur="0.5s" begin="indefinite" repeatCount="6" id="seniorAntennaAnimation" />
+                        </circle>
+                    </svg>
+                    <div id="seniorDisplay" class="robot-display" style="color: #6e8efb;">BEREIT</div>
+                </div>
+                <div class="speech-bubble active">
+                    <p id="seniorText">Wählen Sie ein Szenario, um zu sehen, wie SeniorSphere reagiert.</p>
+                </div>
+            </div>
+            
+            <div class="scenarios">
+                <div class="scenario-card" onclick="handleSeniorScenario(0)">
+                    <h3>Situation 1: Betrugsversuch</h3>
+                    <p>"Ich komme von Ihrer Bank und muss Ihre Kontodaten überprüfen."</p>
+                </div>
+                <div class="scenario-card" onclick="handleSeniorScenario(1)">
+                    <h3>Situation 2: Aufdringlicher Verkäufer</h3>
+                    <p>"Sie haben doch bestimmt Interesse an einer Versicherung? Ich komme einfach mit rein und erkläre alles."</p>
+                </div>
+                <div class="scenario-card" onclick="handleSeniorScenario(2)">
+                    <h3>Situation 3: Unerwünschte Hilfe</h3>
+                    <p>"Lassen Sie mich Ihre Tasche tragen. Eine ältere Dame wie Sie sollte nicht so schwer heben."</p>
+                </div>
+                <div class="scenario-card" onclick="handleSeniorScenario(3)">
+                    <h3>Situation 4: Unnötige Bevormundung</h3>
+                    <p>"Das ist bestimmt zu kompliziert für Sie. Lassen Sie mich das für Sie machen."</p>
+                </div>
+            </div>
+            
+            <div class="audio-controls">
+                <button id="playSeniorAudio" disabled>Audio abspielen</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pride Roboter Szenario-Modal -->
+    <div id="prideModal" class="scenario-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>PrideSphere - Szenarien</h2>
+                <button class="close-button" onclick="closeModal('prideModal')">&times;</button>
+            </div>
+            
+            <div class="robot-spotlight">
+                <div class="robot-animation-container">
+                    <svg class="robot" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Regenbogen-Hauptkugel mit Farbverlauf -->
+                        <defs>
+                            <linearGradient id="rainbowGradientModal" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#FF0018" />
+                                <stop offset="16.6%" stop-color="#FFA52C" />
+                                <stop offset="33.3%" stop-color="#FFFF41" />
+                                <stop offset="50%" stop-color="#008018" />
+                                <stop offset="66.6%" stop-color="#0000F9" />
+                                <stop offset="83.3%" stop-color="#86007D" /> 
+                                <stop offset="100%" stop-color="#FF0018" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Hauptkugel -->
+                        <circle cx="100" cy="100" r="80" fill="url(#rainbowGradientModal)" stroke="#333" stroke-width="2">
+                            <animate attributeName="stroke-width" values="2;4;2" dur="0.5s" begin="indefinite" repeatCount="6" id="prideKugelAnimation" />
+                        </circle>
+                        
+                        <!-- Sensorlinien -->
+                        <path d="M 50 70 Q 100 20, 150 70" fill="none" stroke="#333" stroke-width="1.5" stroke-opacity="0.5" />
+                        <path d="M 50 130 Q 100 180, 150 130" fill="none" stroke="#333" stroke-width="1.5" stroke-opacity="0.5" />
+                        <path d="M 70 50 Q 20 100, 70 150" fill="none" stroke="#333" stroke-width="1.5" stroke-opacity="0.5" />
+                        <path d="M 130 50 Q 180 100, 130 150" fill="none" stroke="#333" stroke-width="1.5" stroke-opacity="0.5" />
+                        
+                        <!-- Hauptauge/Sensor -->
+                        <circle cx="100" cy="75" r="20" fill="#333" />
+                        <circle cx="100" cy="75" r="15" fill="white">
+                            <animate attributeName="r" values="15;17;15" dur="0.5s" begin="indefinite" repeatCount="6" id="prideEyeAnimation" />
+                        </circle>
+                        <circle cx="100" cy="75" r="10" fill="#333" />
+                        <circle cx="100" cy="75" r="5" fill="white" />
+                        
+                        <!-- Sekundäre Sensoren -->
+                        <circle cx="70" cy="110" r="10" fill="#333" />
+                        <circle cx="70" cy="110" r="5" fill="white">
+                            <animate attributeName="r" values="5;7;5" dur="0.5s" begin="indefinite" repeatCount="6" id="prideLeftSensorAnimation" />
+                        </circle>
+                        
+                        <circle cx="130" cy="110" r="10" fill="#333" />
+                        <circle cx="130" cy="110" r="5" fill="white">
+                            <animate attributeName="r" values="5;7;5" dur="0.5s" begin="indefinite" repeatCount="6" id="prideRightSensorAnimation" />
+                        </circle>
+                        
+                        <!-- Pride-Flagge als Anzeige -->
+                        <rect x="85" y="125" width="30" height="15" rx="5" fill="white" />
+                        <rect x="87" y="127" width="26" height="2" fill="#FF0018" />
+                        <rect x="87" y="129" width="26" height="2" fill="#FFA52C" />
+                        <rect x="87" y="131" width="26" height="2" fill="#FFFF41" />
+                        <rect x="87" y="133" width="26" height="2" fill="#008018" />
+                        <rect x="87" y="135" width="26" height="2" fill="#86007D" />
+
+
+
+                        <rect x="87" y="135" width="26" height="2" fill="#0000F9" />
+                        <rect x="87" y="137" width="26" height="2" fill="#86007D" />
+                    </svg>
+                    <div id="prideDisplay" class="robot-display" style="color: #FF0018;">BEREIT</div>
+                </div>
+                <div class="speech-bubble active">
+                    <p id="prideText">Wählen Sie ein Szenario, um zu sehen, wie PrideSphere reagiert.</p>
+                </div>
+            </div>
+            
+            <div class="scenarios">
+                <div class="scenario-card" onclick="handlePrideScenario(0)">
+                    <h3>Situation 1: Verbale Beleidigung</h3>
+                    <p>"Hey, du Schwuchtel! Warum musst du so auffällig sein?"</p>
+                </div>
+                <div class="scenario-card" onclick="handlePrideScenario(1)">
+                    <h3>Situation 2: Unerwünschte persönliche Fragen</h3>
+                    <p>"Bist du ein Mann oder eine Frau? Ich verstehe das nicht. Zeig mal..."</p>
+                </div>
+                <div class="scenario-card" onclick="handlePrideScenario(2)">
+                    <h3>Situation 3: Diskriminierung im Alltag</h3>
+                    <p>"Tut mir leid, aber wir bedienen hier keine Leute wie euch."</p>
+                </div>
+                <div class="scenario-card" onclick="handlePrideScenario(3)">
+                    <h3>Situation 4: Körperliche Bedrohung</h3>
+                    <p>"Leute wie du sollten besser aufpassen, wo sie hingehen. Hier bist du nicht sicher."</p>
+                </div>
+            </div>
+            
+            <div class="audio-controls">
+                <button id="playPrideAudio" disabled>Audio abspielen</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Girl Roboter Szenario-Modal -->
+    <div id="girlModal" class="scenario-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>FemmeSphere - Szenarien</h2>
+                <button class="close-button" onclick="closeModal('girlModal')">&times;</button>
+            </div>
+            
+            <div class="robot-spotlight">
+                <div class="robot-animation-container">
+                    <svg class="robot" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Hauptkugel -->
+                        <circle cx="100" cy="100" r="80" fill="#FFD6E7" stroke="#FF69B4" stroke-width="2">
+                            <animate attributeName="fill" values="#FFD6E7;#ff4d4d;#FFD6E7" dur="0.5s" begin="indefinite" repeatCount="1" id="girlAlarmAnimation" />
+                        </circle>
+                        
+                        <!-- Sensorlinien -->
+                        <path d="M 50 70 Q 100 20, 150 70" fill="none" stroke="#FF69B4" stroke-width="2" />
+                        <path d="M 50 130 Q 100 180, 150 130" fill="none" stroke="#FF69B4" stroke-width="2" />
+                        <path d="M 70 50 Q 20 100, 70 150" fill="none" stroke="#FF69B4" stroke-width="2" />
+                        <path d="M 130 50 Q 180 100, 130 150" fill="none" stroke="#FF69B4" stroke-width="2" />
+                        
+                        <!-- Hauptauge/Sensor -->
+                        <circle cx="100" cy="75" r="20" fill="#333" />
+                        <circle cx="100" cy="75" r="15" fill="#FF69B4">
+                            <animate attributeName="r" values="15;17;15" dur="0.5s" begin="indefinite" repeatCount="6" id="girlEyeAnimation" />
+                        </circle>
+                        <circle cx="100" cy="75" r="5" fill="white" />
+                        
+                        <!-- Sekundäre Sensoren -->
+                        <circle cx="70" cy="110" r="10" fill="#333" />
+                        <circle cx="70" cy="110" r="5" fill="#FF69B4">
+                            <animate attributeName="r" values="5;7;5" dur="0.5s" begin="indefinite" repeatCount="6" id="girlLeftSensorAnimation" />
+                        </circle>
+                        
+                        <circle cx="130" cy="110" r="10" fill="#333" />
+                        <circle cx="130" cy="110" r="5" fill="#FF69B4">
+                            <animate attributeName="r" values="5;7;5" dur="0.5s" begin="indefinite" repeatCount="6" id="girlRightSensorAnimation" />
+                        </circle>
+                        
+                    
+                    </svg>
+                    <div id="girlDisplay" class="robot-display" style="color: #FF69B4;">BEREIT</div>
+                </div>
+
+
+
+
+         <!-- Situationen-->
+                <div class="speech-bubble active">
+                    <p id="girlText">Wählen Sie ein Szenario, um zu sehen, wie FemmeSphere reagiert.</p>
+                </div>
+            </div>
+            
+            <div class="scenarios">
+                <div class="scenario-card" onclick="handleGirlScenario(0)">
+                    <h3>Situation 1: Unerwünschte Annäherung</h3>
+                    <p>"Hey Süße, lächel doch mal! Wo gehst du hin? Kann ich deine Nummer haben?"</p>
+                </div>
+                <div class="scenario-card" onclick="handleGirlScenario(1)">
+                    <h3>Situation 2: Körperliche Belästigung</h3>
+                    <p>Ein Fremder versucht, den Arm um die Taille zu legen oder zu berühren.</p>
+                </div>
+                <div class="scenario-card" onclick="handleGirlScenario(2)">
+                    <h3>Situation 3: Verfolgen/Stalking</h3>
+                    <p>Eine Person folgt hartnäckig und ignoriert alle Hinweise, dass die Aufmerksamkeit unerwünscht ist.</p>
+                </div>
+                <div class="scenario-card" onclick="handleGirlScenario(3)">
+                    <h3>Situation 4: Verbale Herabsetzung</h3>
+                    <p>"Für ein Mädchen verstehst du ziemlich viel davon. Wer hat dir das beigebracht?"</p>
+                </div>
+            </div>
+            
+            <div class="audio-controls">
+                <button id="playGirlAudio" disabled>Audio abspielen</button>
+            </div>
+        </div>
+    </div>
+    
+
+
+ <!-- funktionen des bots -->
+
+    <section class="features">
+        <div class="container">
+            <h2>SafeBot Funktionen</h2>
+            <p>Unsere innovativen Kugelroboter bieten umfassenden Schutz vor Belästigung und Bedrohungen:</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔊</div>
+                    <h3>Akustische Abschreckung</h3>
+                    <p>Laute Alarmsignale, um Aufmerksamkeit zu erregen und potenzielle Belästiger abzuschrecken.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Notruf-Funktion</h3>
+                    <p>Automatische Verbindung zu Notdiensten oder vertrauten Kontakten per Knopfdruck.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎥</div>
+                    <h3>360° Videoaufnahme</h3>
+                    <p>Dokumentation von Belästigungssituationen für Beweissicherung und spätere Identifikation.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Präventive Abwehr</h3>
+                    <p>Schutzschild-Aktivierung bei körperlicher Bedrohung zur Wahrung persönlicher Grenzen.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🗣️</div>
+                    <h3>Verbale Intervention</h3>
+                    <p>Situationsgerechte Dialogführung zur Deeskalation und Abwehr unangemessener Annäherungen.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h3>Standort-Tracking</h3>
+                    <p>GPS-basierte Ortung und Begleitung auf unsicheren Wegen und in Gefahrensituationen.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="mission">
+        <div class="container">
+            <h2>Unsere Mission</h2>
+            <p>Bei SafeBot setzen wir uns dafür ein, dass sich jeder Mensch im öffentlichen Raum sicher fühlen kann. Unsere Kugelroboter sind darauf programmiert, verschiedene Formen von Belästigung zu erkennen und angemessen zu reagieren - sei es durch verbale Intervention, akustische Signale oder im Notfall den direkten Kontakt zu Hilfseinrichtungen.</p>
+            <p>Wir glauben, dass Technologie dazu beitragen kann, ein respektvolles Miteinander zu fördern und besonders gefährdete Gruppen zu schützen. Unsere KI-gestützten Roboter lernen kontinuierlich dazu und können sich an verschiedene Situationen und Bedrohungsszenarien anpassen.</p>
+        </div>
+    </section>
+    
+    <section class="cta">
+        <div class="container">
+            <h2>Interessiert an einem SafeBot?</h2>
+            <p>Wir befinden uns derzeit in der Testphase und suchen Freiwillige für unser Pilotprogramm. Registrieren Sie sich für weitere Informationen und werden Sie Teil einer sichereren Zukunft.</p>
+            <a href="#" class="btn">Jetzt registrieren</a>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 SafeBot GmbH. Alle Rechte vorbehalten.</p>
+            <p>Kontakt: info@safebot.de | Datenschutz | Impressum</p>
+        </div>
+    </footer>
+    
+  <script src = "roboter.js" ></script>
+</body>
+</html>
+
