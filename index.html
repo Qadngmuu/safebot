@@ -21,7 +21,7 @@
             padding: 0 20px;
         }
         
-        /* Typography */
+       
         h1 {
             margin: 0;
             font-size: 2.5rem;
@@ -32,6 +32,7 @@
             margin-top: 0.5rem;
         }
         
+
         /* Header */
         header {
             background: linear-gradient(135deg, #393939, #272727);
@@ -48,14 +49,14 @@
         }
 
 
-        /*Funktionen */
+        /*Function Section */
         .features {
     padding: 3rem 0;
     background: linear-gradient(135deg, #393939, #272727);
     color: black; /* Standardfarbe für alles */
 }
 
-/* Nur Überschrift und Einleitungstext weiß machen */
+
 .features .container > h2,
 .features .container > p {
     color: white;
@@ -92,12 +93,22 @@
             height: 300px;
             margin: 20px;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, filter 0.3s ease;
         }
         
         .robot-wrapper:hover {
             transform: translateY(-10px);
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.7));
         }
+        
+        /* Lichteffekt*/
+        /* .robot-wrapper .robot {
+            transition: filter 0.3s ease;
+        }
+        
+        .robot-wrapper:hover .robot {
+            filter: brightness(1.2) contrast(1.1);
+        }  */
         
         .robot-name {
             text-align: center;
@@ -133,7 +144,7 @@
             position: relative;
             width: 200px;
             height: 200px;
-            flex-shrink: 0; /* Prevents robot from shrinking in flex layouts */
+            flex-shrink: 0; 
         }
         
         /* Speech Bubbles */
@@ -148,7 +159,7 @@
         
         }
         
-        /* Default speech bubble (in main robot display) */
+        /* Speech Bubble Abschnitt */
         .robot-wrapper .speech-bubble {
             position: absolute;
             top: -60px;
@@ -179,7 +190,7 @@
             display: block;
         }
         
-        /* Features Section */
+        /* Funktionen abschnitt */
         .features-grid {
             display: flex;
             flex-wrap: wrap;
@@ -188,6 +199,7 @@
             margin-top: 30px;
         }
         
+
         .feature-card {
             background-color: white;
             border-radius: 8px;
@@ -234,7 +246,7 @@
             max-width: 600px;
             max-height: 80vh;
             overflow-y: auto;
-            color: black; /* Standardfarbe für gesamten Text */
+            color: black; /* Standardfarbe für gesamten text */
         }
 
             /* Nur das erste h2 in der modal-header soll weiß sein */
@@ -310,8 +322,8 @@
             text-align: center;
         }
         
-        /* Buttons & CTAs */
-        .btn {
+        /* Buttons */
+        .button {
             display: inline-block;
             background-color: white;
             color: #6e8efb;
@@ -323,7 +335,7 @@
             transition: all 0.3s ease;
         }
         
-        .btn:hover {
+        .button:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             
@@ -417,7 +429,7 @@
     <header>
         <div class="container">
             <h1> S A F E B O T</h1>
-            <p class="tagline">  Respekt. Sicherheit. Gleichstellung. Robotik macht's möglich.</p>
+            <p class="tagline">  Respekt. Sicherheit. Gleichstellung. SAFEBOT macht's möglich.</p>
 
         </div>
     </header>
@@ -548,7 +560,9 @@
 
 
             
-<p style="margin-top: -50px;">Innovative Kugelroboter zum Schutz vor Belästigung im öffentlichen Raum.</p>
+<p style="margin-top: -50px;">Innovative Kugelroboter zum Schutz vor Belästigung im öffentlichen Raum. <br>
+    <br> Personalisierbare Varianten ermöglichen eine individuelle Anpassung 
+    <br> an Alter, Bedürfnisse und Lebenssituation der Nutzer.</p>
         </div>
     </section>
     
@@ -813,7 +827,7 @@
     
 
 
- <!-- funktionen des bots -->
+
 
     <section class="features">
         <div class="container">
@@ -872,7 +886,7 @@
         <div class="container">
             <h2>Interessiert an einem SafeBot?</h2>
             <p>Wir befinden uns derzeit in der Testphase und suchen Freiwillige für unser Pilotprogramm. Registrieren Sie sich für weitere Informationen und werden Sie Teil einer sichereren Zukunft.</p>
-            <a href="#" class="btn">Jetzt registrieren</a>
+            <a href="#" class="button">Jetzt registrieren</a>
         </div>
     </section>
     
@@ -886,4 +900,6 @@
   <script src = "roboter.js" ></script>
 </body>
 </html>
+
+
 
